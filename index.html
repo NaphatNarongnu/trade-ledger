@@ -227,11 +227,21 @@ body{
   border:1px solid var(--border); filter:none;
 }
 
+.auto-tag{
+  font-family:var(--font-mono); font-size:9px; color:var(--gold);
+  text-transform:none; letter-spacing:0; font-weight:400; margin-left:6px;
+}
 .checklist-card{
   background:var(--surface-2); border:1px solid var(--gold-dim);
   border-radius:8px; padding:14px 16px; margin-bottom:16px;
 }
 .checklist-card.locked{opacity:0.4; pointer-events:none;}
+.checklist-comment{
+  margin-top:12px; padding-top:12px; border-top:1px solid rgba(201,162,75,0.25);
+  font-family:var(--font-body); font-size:12px; line-height:1.5; color:var(--green);
+  display:flex; gap:8px; align-items:flex-start;
+}
+.checklist-comment::before{content:'✅'; flex-shrink:0;}
 
 .cooldown-banner{
   background:var(--red-dim); border:1px solid var(--red);
@@ -458,7 +468,38 @@ body{
 
       <div class="field">
         <label>Symbol</label>
-        <input type="text" id="f-symbol" placeholder="เช่น XAUUSD, BTCUSD" value="BTCUSD">
+        <select id="f-symbol" onchange="handleSymbolChange()">
+          <optgroup label="Forex — คู่หลัก">
+            <option value="EURUSD">EURUSD</option>
+            <option value="GBPUSD">GBPUSD</option>
+            <option value="USDJPY">USDJPY</option>
+            <option value="USDCHF">USDCHF</option>
+            <option value="AUDUSD">AUDUSD</option>
+            <option value="USDCAD">USDCAD</option>
+            <option value="NZDUSD">NZDUSD</option>
+          </optgroup>
+          <optgroup label="Forex — คู่รอง">
+            <option value="EURGBP">EURGBP</option>
+            <option value="EURJPY">EURJPY</option>
+            <option value="GBPJPY">GBPJPY</option>
+            <option value="EURAUD">EURAUD</option>
+            <option value="AUDJPY">AUDJPY</option>
+            <option value="CHFJPY">CHFJPY</option>
+          </optgroup>
+          <optgroup label="Commodities / Crypto">
+            <option value="XAUUSD" selected>XAUUSD</option>
+            <option value="XAGUSD">XAGUSD</option>
+            <option value="USOIL">USOIL</option>
+            <option value="BTCUSD">BTCUSD</option>
+            <option value="ETHUSD">ETHUSD</option>
+          </optgroup>
+          <optgroup label="เพิ่มเอง" id="customSymbolGroup"></optgroup>
+          <option value="__add_new__">+ เพิ่มสัญลักษณ์ใหม่...</option>
+        </select>
+        <div id="addSymbolWrap" style="display:none; margin-top:8px; gap:6px;">
+          <input type="text" id="newSymbolInput" placeholder="เช่น EURNZD" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault(); addCustomSymbol();}">
+          <button type="button" class="submit-btn" style="width:auto; padding:9px 14px; margin-top:0;" onclick="addCustomSymbol()">เพิ่ม</button>
+        </div>
       </div>
 
       <div class="field">
@@ -472,7 +513,7 @@ body{
       <div class="row2">
         <div class="field">
           <label>ราคาเข้า</label>
-          <input type="number" step="any" id="f-entry" placeholder="65143.73" value="65143.73">
+          <input type="number" step="any" id="f-entry" placeholder="65143.73" value="65143.73" oninput="autoCalcRR()">
         </div>
         <div class="field">
           <label>Lot Size</label>
@@ -486,7 +527,7 @@ body{
           <input type="number" step="any" id="f-pnl" placeholder="-128.99" value="-128.99">
         </div>
         <div class="field">
-          <label>RR (ถ้ามี)</label>
+          <label>RR <span id="rrAutoTag" class="auto-tag" style="display:none;">คำนวณอัตโนมัติ</span></label>
           <input type="number" step="any" id="f-rr" placeholder="1.5">
         </div>
       </div>
@@ -494,11 +535,11 @@ body{
       <div class="row2">
         <div class="field">
           <label>TP (ถ้ามี)</label>
-          <input type="number" step="any" id="f-tp" placeholder="65500.00">
+          <input type="number" step="any" id="f-tp" placeholder="65500.00" oninput="autoCalcRR()">
         </div>
         <div class="field">
           <label>SL (ถ้ามี)</label>
-          <input type="number" step="any" id="f-sl" placeholder="64900.00">
+          <input type="number" step="any" id="f-sl" placeholder="64900.00" oninput="autoCalcRR()">
         </div>
       </div>
 
@@ -530,6 +571,7 @@ body{
         <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> ไม่ได้เข้าเพราะอยากมีส่วนร่วม/FOMO/หวังว่าจะกลับตัว</label>
         <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> Lot size ไม่เกิน ทุนในพอร์ต ÷ 10,000 (คำนวณก่อนเข้าทุกครั้ง ไม่ใช่ใช้ความรู้สึก)</label>
         <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> ตัดสินใจเข้า/ถือ/ออกอ้างอิงจาก TF 1H เป็นหลัก (ไม่ใช่ TF 5-15 นาทีเพียงอย่างเดียว)</label>
+        <div class="checklist-comment" id="checklistComment" style="display:none;"></div>
       </div>
 
       <div class="field">
@@ -857,12 +899,99 @@ function renderChart(){
 }
 
 
+const CHECKLIST_COMMENTS = [
+  'ครบทุกข้อแล้ว — ก่อนกดจริง ทบทวนอีกครั้ง: lot ตามสูตรทุน÷10,000 และ SL ต้องตั้งจริง ไม่ใช่แค่ติ๊กผ่าน',
+  'พร้อมเข้าไม้ตามระบบแล้ว — จำไว้: มีวินัยดีกว่ามีโชค ถ้าเงื่อนไขเปลี่ยนกลางทาง กลับมาติ๊กใหม่',
+  'ครบ 7 ข้อ — นี่คือไม้ที่วางแผนไว้แล้วจริง ไม่ใช่ไล่ราคา ให้ SL/TP ทำงานแทนอารมณ์หลังเข้าไม้',
+  'เช็คครบแล้ว — ก่อนยืนยัน ลองถามตัวเองอีกครั้ง: "ถ้าไม่ได้ถือไม้นี้อยู่ ฉันจะเปิดใหม่ตรงจุดนี้ไหม"'
+];
+
 function updateChecklist(){
   const boxes = document.querySelectorAll('.chk');
   const allChecked = Array.from(boxes).every(b => b.checked);
   const btn = document.getElementById('submitBtn');
   btn.disabled = !allChecked;
   btn.textContent = allChecked ? '+ บันทึกเทรด' : '+ บันทึกเทรด (ติ๊ก checklist ให้ครบก่อน)';
+
+  const commentEl = document.getElementById('checklistComment');
+  if(allChecked){
+    const msg = CHECKLIST_COMMENTS[Math.floor(Math.random() * CHECKLIST_COMMENTS.length)];
+    commentEl.textContent = msg;
+    commentEl.style.display = 'flex';
+  } else {
+    commentEl.style.display = 'none';
+  }
+}
+
+function autoCalcRR(){
+  const entry = parseFloat(document.getElementById('f-entry').value);
+  const tp = parseFloat(document.getElementById('f-tp').value);
+  const sl = parseFloat(document.getElementById('f-sl').value);
+  const rrField = document.getElementById('f-rr');
+  const tag = document.getElementById('rrAutoTag');
+
+  if(!isNaN(entry) && !isNaN(tp) && !isNaN(sl)){
+    const risk = Math.abs(entry - sl);
+    const reward = Math.abs(tp - entry);
+    if(risk > 0){
+      rrField.value = (reward / risk).toFixed(2);
+      tag.style.display = 'inline';
+      return;
+    }
+  }
+  tag.style.display = 'none';
+}
+
+const CUSTOM_SYMBOLS_KEY = 'trading-journal:custom-symbols';
+let lastNonAddSymbolValue = 'XAUUSD';
+
+async function loadCustomSymbols(){
+  let list = [];
+  try{
+    const res = await window.storage.get(CUSTOM_SYMBOLS_KEY, false);
+    list = res ? JSON.parse(res.value) : [];
+  }catch(e){ list = []; }
+  const group = document.getElementById('customSymbolGroup');
+  group.innerHTML = list.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+  return list;
+}
+
+function handleSymbolChange(){
+  const sel = document.getElementById('f-symbol');
+  const wrap = document.getElementById('addSymbolWrap');
+  if(sel.value === '__add_new__'){
+    wrap.style.display = 'flex';
+    document.getElementById('newSymbolInput').focus();
+  } else {
+    lastNonAddSymbolValue = sel.value;
+    wrap.style.display = 'none';
+  }
+}
+
+async function addCustomSymbol(){
+  const input = document.getElementById('newSymbolInput');
+  const raw = input.value.trim().toUpperCase();
+  if(!raw) return;
+
+  let list = [];
+  try{
+    const res = await window.storage.get(CUSTOM_SYMBOLS_KEY, false);
+    list = res ? JSON.parse(res.value) : [];
+  }catch(e){ list = []; }
+
+  if(!list.includes(raw)){
+    list.push(raw);
+    try{
+      await window.storage.set(CUSTOM_SYMBOLS_KEY, JSON.stringify(list), false);
+    }catch(e){ /* still add it to the dropdown for this session even if save failed */ }
+  }
+
+  await loadCustomSymbols();
+  const sel = document.getElementById('f-symbol');
+  sel.value = raw;
+  lastNonAddSymbolValue = raw;
+  document.getElementById('addSymbolWrap').style.display = 'none';
+  input.value = '';
 }
 
 function resetChecklist(){
@@ -883,8 +1012,8 @@ async function addTrade(){
   const psych = document.getElementById('f-psych').value.trim();
   const msgEl = document.getElementById('formMsg');
 
-  if(!symbol || entry === '' || lot === '' || pnl === ''){
-    msgEl.textContent = 'กรอก Symbol, ราคาเข้า, Lot และ P/L ให้ครบก่อน';
+  if(!symbol || symbol === '__add_new__' || entry === '' || lot === '' || pnl === ''){
+    msgEl.textContent = symbol === '__add_new__' ? 'พิมพ์สัญลักษณ์ใหม่แล้วกด "เพิ่ม" ก่อนบันทึกเทรด' : 'กรอก Symbol, ราคาเข้า, Lot และ P/L ให้ครบก่อน';
     return;
   }
 
@@ -1015,6 +1144,7 @@ function csvPsychFor(row){
 // init
 document.getElementById('f-date').value = todayStr();
 checkCooldown();
+loadCustomSymbols();
 loadTrades().then(async () => {
   const byId = new Map(trades.map(t => [t.id, t]));
   let everRemoved = [];
