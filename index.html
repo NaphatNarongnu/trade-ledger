@@ -7,19 +7,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root{
-  --bg:#0F1115;
-  --surface:#171A21;
-  --surface-2:#1D212B;
-  --border:#262B36;
-  --text:#E8EAED;
-  --text-dim:#8A8F98;
-  --text-faint:#565C68;
-  --gold:#C9A24B;
-  --gold-dim:#8A7238;
-  --green:#3FB68B;
-  --green-dim:#1E3A32;
-  --red:#E2574C;
-  --red-dim:#3D2323;
+  --bg:#FAF5EC;
+  --surface:#FFFEFB;
+  --surface-2:#F4ECDD;
+  --border:#E5D8BF;
+  --text:#3B2F22;
+  --text-dim:#7A6A54;
+  --text-faint:#A6987F;
+  --gold:#A9762F;
+  --gold-dim:#C6A06C;
+  --green:#2E8B57;
+  --green-dim:#DDEFE2;
+  --red:#C0392B;
+  --red-dim:#F8DFDA;
   --font-display:'Fraunces', Georgia, serif;
   --font-mono:'JetBrains Mono', 'SF Mono', Consolas, monospace;
   --font-body:'Inter', -apple-system, sans-serif;
@@ -29,7 +29,7 @@
 
 body{
   background:
-    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(201,162,75,0.06), transparent),
+    radial-gradient(ellipse 900px 500px at 15% -10%, rgba(169,118,47,0.08), transparent),
     var(--bg);
   color:var(--text);
   font-family:var(--font-body);
@@ -64,12 +64,12 @@ body{
   padding:12px 18px;
   display:flex; gap:24px;
   position:relative;
-  background:linear-gradient(180deg, rgba(201,162,75,0.05), transparent);
+  background:linear-gradient(180deg, rgba(169,118,47,0.05), transparent);
 }
 .stamp::before{
   content:'';
   position:absolute; inset:3px;
-  border:1px dashed rgba(201,162,75,0.25);
+  border:1px dashed rgba(169,118,47,0.25);
   border-radius:4px;
   pointer-events:none;
 }
@@ -237,7 +237,7 @@ body{
 }
 .checklist-card.locked{opacity:0.4; pointer-events:none;}
 .checklist-comment{
-  margin-top:12px; padding-top:12px; border-top:1px solid rgba(201,162,75,0.25);
+  margin-top:12px; padding-top:12px; border-top:1px solid rgba(169,118,47,0.25);
   font-family:var(--font-body); font-size:12px; line-height:1.5; color:var(--green);
   display:flex; gap:8px; align-items:flex-start;
 }
@@ -267,6 +267,15 @@ body{
   cursor:pointer;
 }
 .check-item:has(input:checked){color:var(--text);}
+.override-item{margin-bottom:10px;}
+.override-item .check-item{margin-bottom:5px;}
+.override-reason{
+  width:100%; background:var(--surface); border:1px solid var(--red-dim);
+  border-radius:6px; padding:7px 9px; color:var(--text); font-family:var(--font-body);
+  font-size:11.5px; min-height:36px; resize:vertical;
+}
+.override-reason:placeholder-shown{border-color:var(--border);}
+.override-reason:focus{outline:none; border-color:var(--red);}
 
 .msg{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); margin-top:10px; min-height:14px;}
 
@@ -310,7 +319,7 @@ body{
   position:relative;
 }
 .trade:last-child{border-bottom:none;}
-.trade:hover{background:rgba(255,255,255,0.02);}
+.trade:hover{background:rgba(59,47,34,0.03);}
 
 .trade .tag{
   font-family:var(--font-mono); font-size:10px; font-weight:700;
@@ -338,6 +347,43 @@ body{
   font-size:16px; padding:4px 8px; border-radius:4px; line-height:1;
 }
 .del-btn:hover{color:var(--red); background:var(--red-dim);}
+
+.row-actions{display:flex; flex-direction:column; gap:4px; align-items:center;}
+.edit-btn{
+  background:none; border:none; color:var(--text-faint); cursor:pointer;
+  font-size:14px; padding:4px 8px; border-radius:4px; line-height:1;
+}
+.edit-btn:hover{color:var(--gold); background:rgba(169,118,47,0.10);}
+
+.edit-banner{
+  background:rgba(169,118,47,0.12); border:1px solid var(--gold);
+  border-radius:8px; padding:10px 14px; margin-bottom:16px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--font-mono); font-size:12px; color:var(--gold); font-weight:700;
+}
+.edit-cancel-btn{
+  background:none; border:1px solid var(--gold); color:var(--gold);
+  font-family:var(--font-mono); font-size:11px; padding:4px 10px;
+  border-radius:5px; cursor:pointer;
+}
+.edit-cancel-btn:hover{background:var(--gold); color:#FFFEFB;}
+
+.drawdown-box{
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:8px; padding:12px 14px; margin-bottom:16px; text-align:center;
+}
+.dd-label{
+  font-family:var(--font-mono); font-size:10px; text-transform:uppercase;
+  letter-spacing:0.06em; color:var(--text-faint); margin-bottom:4px;
+}
+.dd-value{font-family:var(--font-mono); font-size:20px; font-weight:700; color:var(--red);}
+.dd-pct{font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin-top:3px;}
+.drawdown-box.ok{border-color:var(--green);}
+.drawdown-box.ok .dd-pct{color:var(--green); font-weight:700;}
+.drawdown-box.warn{border-color:var(--gold);}
+.drawdown-box.warn .dd-pct{color:var(--gold); font-weight:700;}
+.drawdown-box.danger{border-color:var(--red); background:var(--red-dim);}
+.drawdown-box.danger .dd-pct{color:var(--red); font-weight:700;}
 
 .field input[type="file"]{
   padding:8px; font-family:var(--font-body); font-size:12px; cursor:pointer;
@@ -463,8 +509,13 @@ body{
   </div>
 
   <div class="grid">
-    <div class="form-card">
+    <div class="form-card" id="formCardTop">
       <h2>บันทึกเทรดใหม่</h2>
+
+      <div class="edit-banner" id="editBanner" style="display:none;">
+        <span>✎ กำลังแก้ไขเทรดนี้อยู่</span>
+        <button type="button" class="edit-cancel-btn" onclick="cancelEdit()">ยกเลิก</button>
+      </div>
 
       <div class="field">
         <label>Symbol</label>
@@ -513,11 +564,11 @@ body{
       <div class="row2">
         <div class="field">
           <label>ราคาเข้า</label>
-          <input type="number" step="any" id="f-entry" placeholder="65143.73" value="65143.73" oninput="autoCalcRR()">
+          <input type="number" step="any" id="f-entry" placeholder="65143.73" value="65143.73" oninput="autoCalcRR(); calcDrawdown();">
         </div>
         <div class="field">
           <label>Lot Size</label>
-          <input type="number" step="any" id="f-lot" placeholder="1" value="1">
+          <input type="number" step="any" id="f-lot" placeholder="1" value="1" oninput="calcDrawdown()">
         </div>
       </div>
 
@@ -539,8 +590,25 @@ body{
         </div>
         <div class="field">
           <label>SL (ถ้ามี)</label>
-          <input type="number" step="any" id="f-sl" placeholder="64900.00" oninput="autoCalcRR()">
+          <input type="number" step="any" id="f-sl" placeholder="64900.00" oninput="autoCalcRR(); calcDrawdown();">
         </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Equity/Balance พอร์ต (USD)</label>
+          <input type="number" step="any" id="f-equity" placeholder="10000" oninput="saveEquity(); calcDrawdown();">
+        </div>
+        <div class="field">
+          <label>มูลค่า/จุด ต่อ 1 lot (USD) <span class="auto-tag">ปรับได้</span></label>
+          <input type="number" step="any" id="f-pointvalue" placeholder="1" oninput="calcDrawdown()">
+        </div>
+      </div>
+
+      <div class="drawdown-box" id="drawdownBox" style="display:none;">
+        <div class="dd-label">ขาดทุนคาดการณ์ถ้าโดน SL</div>
+        <div class="dd-value" id="ddValue">$0</div>
+        <div class="dd-pct" id="ddPct">—</div>
       </div>
 
       <div class="field">
@@ -564,13 +632,42 @@ body{
 
       <div class="checklist-card" id="checklistCard">
         <div class="checklist-title">✓ Pre-Trade Checklist</div>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> เข้าในช่วงเวลาที่กำหนด (เช้า 06:30-07:30 วางแผน / ค่ำ 20:00-22:00 เข้าไม้)</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> วันนี้ยังไม่เกิน 2 ไม้</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> ตั้ง SL/TP ไว้แล้วก่อนเข้าไม้จริง</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> มี confluence รองรับจริง (fib + EMA + RSI + BOS/CHoCH) ไม่ใช่ไล่ราคา</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> ไม่ได้เข้าเพราะอยากมีส่วนร่วม/FOMO/หวังว่าจะกลับตัว</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> Lot size ไม่เกิน ทุนในพอร์ต ÷ 10,000 (คำนวณก่อนเข้าทุกครั้ง ไม่ใช่ใช้ความรู้สึก)</label>
-        <label class="check-item"><input type="checkbox" class="chk" onchange="updateChecklist()"> ตัดสินใจเข้า/ถือ/ออกอ้างอิงจาก TF 1H เป็นหลัก (ไม่ใช่ TF 5-15 นาทีเพียงอย่างเดียว)</label>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-time" onchange="updateChecklist()"> เข้าในช่วงเวลาที่กำหนด (เช้า 06:30-07:30 วางแผน / ค่ำ 20:00-22:00 เข้าไม้)</label>
+          <textarea class="override-reason" id="reason-time" placeholder="ถ้าไม่ตรงเวลา ระบุเหตุผลที่จะฝ่าฝืนตรงนี้ก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-count" onchange="updateChecklist()"> วันนี้ยังไม่เกิน 2 ไม้</label>
+          <textarea class="override-reason" id="reason-count" placeholder="ถ้าเกิน 2 ไม้แล้ว ระบุเหตุผลที่จะฝ่าฝืนตรงนี้ก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-sltp" onchange="updateChecklist()"> ตั้ง SL/TP ไว้แล้วก่อนเข้าไม้จริง</label>
+          <textarea class="override-reason" id="reason-sltp" placeholder="ถ้ายังไม่ได้ตั้ง SL/TP ระบุเหตุผลก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-confluence" onchange="updateChecklist()"> มี confluence รองรับจริง (fib + EMA + RSI + BOS/CHoCH) ไม่ใช่ไล่ราคา</label>
+          <textarea class="override-reason" id="reason-confluence" placeholder="ถ้ายังไม่มี confluence ครบ ระบุเหตุผลก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-fomo" onchange="updateChecklist()"> ไม่ได้เข้าเพราะอยากมีส่วนร่วม/FOMO/หวังว่าจะกลับตัว</label>
+          <textarea class="override-reason" id="reason-fomo" placeholder="ถ้าไม่แน่ใจว่าเข้าเพราะ FOMO หรือเปล่า ระบุเหตุผลก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-lot" onchange="updateChecklist()"> Lot size ไม่เกิน ทุนในพอร์ต ÷ 10,000 (คำนวณก่อนเข้าทุกครั้ง ไม่ใช่ใช้ความรู้สึก)</label>
+          <textarea class="override-reason" id="reason-lot" placeholder="ถ้า lot เกินสูตร ระบุเหตุผลก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
+        <div class="override-item">
+          <label class="check-item"><input type="checkbox" class="chk-override" id="chk-tf" onchange="updateChecklist()"> ตัดสินใจเข้า/ถือ/ออกอ้างอิงจาก TF 1H เป็นหลัก (ไม่ใช่ TF 5-15 นาทีเพียงอย่างเดียว)</label>
+          <textarea class="override-reason" id="reason-tf" placeholder="ถ้าตัดสินใจจาก TF อื่นเป็นหลัก ระบุเหตุผลก่อนถึงจะบันทึกได้..." oninput="updateChecklist()"></textarea>
+        </div>
+
         <div class="checklist-comment" id="checklistComment" style="display:none;"></div>
       </div>
 
@@ -695,7 +792,10 @@ function render(){
         <div class="amt">${fmtMoney(t.pnl)}</div>
         ${t.rr ? `<div class="rr">RR ${t.rr}</div>` : ''}
       </div>
-      <button class="del-btn" onclick="deleteTrade('${t.id}')" title="ลบ">✕</button>
+      <div class="row-actions">
+        <button class="edit-btn" onclick="editTrade('${t.id}')" title="แก้ไข">✎</button>
+        <button class="del-btn" onclick="deleteTrade('${t.id}')" title="ลบ">✕</button>
+      </div>
     </div>
   `).join('');
 }
@@ -731,6 +831,7 @@ async function checkCooldown(){
   if(cooldownInterval){ clearInterval(cooldownInterval); cooldownInterval = null; }
 
   function tick(){
+    if(editingTradeId) return; // don't let cooldown UI fight with edit-mode UI
     const remaining = COOLDOWN_MS - (Date.now() - lastTime);
     if(remaining <= 0){
       banner.style.display = 'none';
@@ -906,16 +1007,38 @@ const CHECKLIST_COMMENTS = [
   'เช็คครบแล้ว — ก่อนยืนยัน ลองถามตัวเองอีกครั้ง: "ถ้าไม่ได้ถือไม้นี้อยู่ ฉันจะเปิดใหม่ตรงจุดนี้ไหม"'
 ];
 
+const CHECKLIST_KEYS = ['time','count','sltp','confluence','fomo','lot','tf'];
+const CHECKLIST_LABELS = {
+  time: 'ช่วงเวลาที่กำหนด',
+  count: 'จำนวนไม้ไม่เกิน 2 ไม้/วัน',
+  sltp: 'ตั้ง SL/TP ก่อนเข้าไม้',
+  confluence: 'มี confluence รองรับจริง',
+  fomo: 'ไม่ได้เข้าเพราะ FOMO',
+  lot: 'Lot ไม่เกินทุน÷10,000',
+  tf: 'อ้างอิง TF 1H เป็นหลัก'
+};
+
 function updateChecklist(){
-  const boxes = document.querySelectorAll('.chk');
-  const allChecked = Array.from(boxes).every(b => b.checked);
+  let allOk = true;
+  let anyOverride = false;
+
+  CHECKLIST_KEYS.forEach(key => {
+    const chk = document.getElementById('chk-' + key);
+    const reason = document.getElementById('reason-' + key).value.trim();
+    const ok = chk.checked || reason.length > 0;
+    if(!ok) allOk = false;
+    if(!chk.checked && reason.length > 0) anyOverride = true;
+  });
+
   const btn = document.getElementById('submitBtn');
-  btn.disabled = !allChecked;
-  btn.textContent = allChecked ? '+ บันทึกเทรด' : '+ บันทึกเทรด (ติ๊ก checklist ให้ครบก่อน)';
+  btn.disabled = !allOk;
+  btn.textContent = allOk ? '+ บันทึกเทรด' : '+ บันทึกเทรด (ติ๊ก checklist ให้ครบก่อน)';
 
   const commentEl = document.getElementById('checklistComment');
-  if(allChecked){
-    const msg = CHECKLIST_COMMENTS[Math.floor(Math.random() * CHECKLIST_COMMENTS.length)];
+  if(allOk){
+    const msg = anyOverride
+      ? '⚠️ กำลังฝ่าฝืนบางข้อของ checklist โดยมีเหตุผลระบุไว้แล้ว — เหตุผลนี้จะถูกบันทึกลงในไม้นี้ด้วย ลองอ่านทวนอีกครั้งว่าเป็นเหตุผลจริงหรือแค่ข้ออ้าง'
+      : CHECKLIST_COMMENTS[Math.floor(Math.random() * CHECKLIST_COMMENTS.length)];
     commentEl.textContent = msg;
     commentEl.style.display = 'flex';
   } else {
@@ -942,6 +1065,68 @@ function autoCalcRR(){
   tag.style.display = 'none';
 }
 
+const EQUITY_KEY = 'trading-journal:equity';
+const POINT_VALUE_DEFAULTS = {
+  XAUUSD:100, XAGUSD:50, USOIL:100,
+  BTCUSD:1, ETHUSD:1,
+  EURUSD:10, GBPUSD:10, AUDUSD:10, NZDUSD:10, USDCAD:10, USDCHF:10,
+  USDJPY:9, EURJPY:9, GBPJPY:9, AUDJPY:9, CHFJPY:9,
+  EURGBP:10, EURAUD:10
+};
+
+async function saveEquity(){
+  const val = document.getElementById('f-equity').value;
+  if(val === '') return;
+  try{ await window.storage.set(EQUITY_KEY, val, false); }catch(e){ /* non-critical */ }
+}
+
+async function loadEquity(){
+  try{
+    const res = await window.storage.get(EQUITY_KEY, false);
+    if(res) document.getElementById('f-equity').value = res.value;
+  }catch(e){ /* none saved yet */ }
+  calcDrawdown();
+}
+
+function suggestPointValue(){
+  const symbol = document.getElementById('f-symbol').value;
+  const pv = POINT_VALUE_DEFAULTS[symbol];
+  if(pv !== undefined) document.getElementById('f-pointvalue').value = pv;
+  calcDrawdown();
+}
+
+function calcDrawdown(){
+  const entry = parseFloat(document.getElementById('f-entry').value);
+  const sl = parseFloat(document.getElementById('f-sl').value);
+  const lot = parseFloat(document.getElementById('f-lot').value);
+  const equity = parseFloat(document.getElementById('f-equity').value);
+  const pv = parseFloat(document.getElementById('f-pointvalue').value);
+  const box = document.getElementById('drawdownBox');
+
+  if(isNaN(entry) || isNaN(sl) || isNaN(lot) || isNaN(pv) || lot <= 0 || entry === sl){
+    box.style.display = 'none';
+    return;
+  }
+
+  const riskPoints = Math.abs(entry - sl);
+  const riskUSD = riskPoints * lot * pv;
+
+  document.getElementById('ddValue').textContent = '-' + fmtMoney(-riskUSD);
+  box.style.display = 'block';
+  box.className = 'drawdown-box';
+
+  const pctEl = document.getElementById('ddPct');
+  if(!isNaN(equity) && equity > 0){
+    const pct = (riskUSD / equity) * 100;
+    pctEl.textContent = pct.toFixed(2) + '% ของพอร์ต';
+    if(pct > 5) box.classList.add('danger');
+    else if(pct > 2) box.classList.add('warn');
+    else box.classList.add('ok');
+  } else {
+    pctEl.textContent = 'ใส่ Equity ด้านบนเพื่อดู % ความเสี่ยงต่อพอร์ต';
+  }
+}
+
 const CUSTOM_SYMBOLS_KEY = 'trading-journal:custom-symbols';
 let lastNonAddSymbolValue = 'XAUUSD';
 
@@ -965,6 +1150,7 @@ function handleSymbolChange(){
   } else {
     lastNonAddSymbolValue = sel.value;
     wrap.style.display = 'none';
+    suggestPointValue();
   }
 }
 
@@ -995,9 +1181,14 @@ async function addCustomSymbol(){
 }
 
 function resetChecklist(){
-  document.querySelectorAll('.chk').forEach(b => b.checked = false);
+  CHECKLIST_KEYS.forEach(key => {
+    document.getElementById('chk-' + key).checked = false;
+    document.getElementById('reason-' + key).value = '';
+  });
   updateChecklist();
 }
+
+let editingTradeId = null;
 
 async function addTrade(){
   const symbol = document.getElementById('f-symbol').value.trim();
@@ -1009,7 +1200,7 @@ async function addTrade(){
   const sl = document.getElementById('f-sl').value;
   const date = document.getElementById('f-date').value || todayStr();
   const notes = document.getElementById('f-notes').value.trim();
-  const psych = document.getElementById('f-psych').value.trim();
+  let psych = document.getElementById('f-psych').value.trim();
   const msgEl = document.getElementById('formMsg');
 
   if(!symbol || symbol === '__add_new__' || entry === '' || lot === '' || pnl === ''){
@@ -1017,15 +1208,59 @@ async function addTrade(){
     return;
   }
 
-  const tradeId = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-  const trade = {
-    id: tradeId,
+  if(!editingTradeId){
+    // only apply the override-reason logic to brand new trades, not edits of old ones
+    const overrideNotes = [];
+    CHECKLIST_KEYS.forEach(key => {
+      const checked = document.getElementById('chk-' + key).checked;
+      const reasonVal = document.getElementById('reason-' + key).value.trim();
+      if(!checked && reasonVal){
+        overrideNotes.push(`⚠️ ฝ่าฝืน "${CHECKLIST_LABELS[key]}": ${reasonVal}`);
+      }
+    });
+    if(overrideNotes.length){
+      psych = (overrideNotes.join(' ') + (psych ? ' — ' + psych : '')).trim();
+    }
+  }
+
+  const fields = {
     symbol, dir: currentDir,
     entry: Number(entry), lot: Number(lot),
     pnl: Number(pnl), rr: rr === '' ? null : Number(rr),
     tp: tp === '' ? null : Number(tp), sl: sl === '' ? null : Number(sl),
-    date, notes, psych, hasImage: false
+    date, notes, psych
   };
+
+  if(editingTradeId){
+    // ---- UPDATE existing trade ----
+    const existing = trades.find(t => t.id === editingTradeId);
+    if(!existing){
+      msgEl.textContent = 'ไม่พบเทรดที่จะแก้ไข (อาจถูกลบไปแล้ว)';
+      cancelEdit();
+      return;
+    }
+    Object.assign(existing, fields);
+
+    if(pendingImageBase64){
+      try{
+        const imgResult = await window.storage.set('trading-journal:img:' + editingTradeId, pendingImageBase64, false);
+        if(imgResult) existing.hasImage = true;
+      }catch(e){
+        msgEl.textContent = 'แก้ไขเทรดสำเร็จ แต่แนบภาพใหม่ไม่สำเร็จ (ไฟล์อาจใหญ่เกินไป)';
+      }
+    }
+
+    await saveTrades();
+    render();
+    msgEl.textContent = msgEl.textContent.includes('แนบภาพ') ? msgEl.textContent : '✓ แก้ไขเทรดแล้ว';
+    cancelEdit();
+    setTimeout(()=>{ msgEl.textContent=''; }, 2500);
+    return;
+  }
+
+  // ---- ADD new trade ----
+  const tradeId = Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  const trade = { id: tradeId, ...fields, hasImage: false };
 
   if(pendingImageBase64){
     try{
@@ -1100,6 +1335,7 @@ function closeLightbox(event){
 const REMOVED_SEEDS_KEY = 'trading-journal:removed-seeds';
 
 async function deleteTrade(id){
+  if(editingTradeId === id) cancelEdit();
   trades = trades.filter(t => t.id !== id);
   await saveTrades();
   if(id.startsWith('seed-')){
@@ -1113,6 +1349,69 @@ async function deleteTrade(id){
     }catch(e){ /* non-critical */ }
   }
   render();
+}
+
+function ensureSymbolOption(symbol){
+  const sel = document.getElementById('f-symbol');
+  const exists = [...sel.options].some(o => o.value === symbol);
+  if(!exists){
+    const opt = document.createElement('option');
+    opt.value = symbol;
+    opt.textContent = symbol;
+    // insert just before the "+ เพิ่มสัญลักษณ์ใหม่..." option
+    sel.insertBefore(opt, sel.options[sel.options.length - 1]);
+  }
+}
+
+function editTrade(id){
+  const trade = trades.find(t => t.id === id);
+  if(!trade) return;
+
+  editingTradeId = id;
+
+  ensureSymbolOption(trade.symbol);
+  document.getElementById('f-symbol').value = trade.symbol;
+  document.getElementById('addSymbolWrap').style.display = 'none';
+  setDir(trade.dir);
+  document.getElementById('f-entry').value = trade.entry;
+  document.getElementById('f-lot').value = trade.lot;
+  document.getElementById('f-pnl').value = trade.pnl;
+  document.getElementById('f-rr').value = trade.rr ?? '';
+  document.getElementById('f-tp').value = trade.tp ?? '';
+  document.getElementById('f-sl').value = trade.sl ?? '';
+  document.getElementById('f-date').value = trade.date;
+  document.getElementById('f-notes').value = trade.notes || '';
+  document.getElementById('f-psych').value = trade.psych || '';
+  document.getElementById('rrAutoTag').style.display = 'none';
+  clearImageSelection();
+  suggestPointValue();
+  calcDrawdown();
+
+  // editing bypasses the pre-trade checklist gate — it's a record correction, not a new trade decision
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = false;
+  btn.textContent = '💾 บันทึกการแก้ไข';
+  document.getElementById('editBanner').style.display = 'flex';
+  document.getElementById('checklistCard').style.display = 'none';
+  document.getElementById('cooldownBanner').style.display = 'none';
+
+  document.getElementById('formCardTop').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function cancelEdit(){
+  editingTradeId = null;
+  document.getElementById('editBanner').style.display = 'none';
+  document.getElementById('checklistCard').style.display = 'block';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-psych').value = '';
+  document.getElementById('f-pnl').value = '';
+  document.getElementById('f-rr').value = '';
+  document.getElementById('f-tp').value = '';
+  document.getElementById('f-sl').value = '';
+  clearImageSelection();
+  resetChecklist();
+  checkCooldown();
+  calcDrawdown();
 }
 
 // Trades Claude has recorded on the user's behalf across the conversation.
@@ -1145,6 +1444,8 @@ function csvPsychFor(row){
 document.getElementById('f-date').value = todayStr();
 checkCooldown();
 loadCustomSymbols();
+loadEquity();
+suggestPointValue();
 loadTrades().then(async () => {
   const byId = new Map(trades.map(t => [t.id, t]));
   let everRemoved = [];
